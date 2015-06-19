@@ -14,7 +14,7 @@ suites:
     network:
       - ["private_network", {ip: "192.168.33.33"}]
   run_list:
-    - recipe[corosync::service]
+    - recipe[corosync::default]
   attributes:
     corosync:
       bind_addr: "192.168.33.0"
@@ -27,7 +27,7 @@ suites:
     network:
       - ["private_network", {ip: "192.168.33.34"}]
   run_list:
-    - recipe[corosync::service]
+    - recipe[corosync::default]
   attributes:
     corosync:
       bind_addr: "192.168.33.0"
