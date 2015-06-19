@@ -21,7 +21,7 @@ default[:corosync][:mcast_port]   = 5405
 default[:corosync][:members]      = []
 default[:corosync][:transport]    = "udp"
 
-case node.platform
+case node["platform_family"]
 when 'suse'
   default[:corosync][:platform][:packages] = %w(sle-hae-release corosync openais)
 
@@ -30,8 +30,7 @@ when 'suse'
   default[:corosync][:platform][:packages].push "cluster-glue"
 
   default[:corosync][:platform][:service_name] = "openais"
-else
-  # FIXME: untested, probably wrong
+when 'rhel'
   default[:corosync][:platform][:packages] = %w(corosync)
   default[:corosync][:platform][:service_name] = "corosync"
 end

@@ -33,40 +33,25 @@ end
 # Find pre-existing authkey on other node(s)
 query  = "chef_environment:#{node.chef_environment}"
 query += " AND corosync_cluster_name:#{cluster_name}"
+query += " AND corosync:authkey"
 
-is_crowbar = !(node[:crowbar].nil?)
 authkey_node = nil
+log("search query: #{query}")
+authkey_nodes = search(:node, query)
+log("nodes with authkey: #{authkey_nodes}")
 
-if is_crowbar
-  if node[:pacemaker][:founder]
-    if node[:corosync][:authkey].nil?
-      include_recipe "corosync::authkey_generator"
-    else
-      # make sure the authkey stays written
-      include_recipe "corosync::authkey_writer"
-    end
-  else
-    query += " AND pacemaker_founder:true AND pacemaker_config_environment:#{node[:pacemaker][:config][:environment]}"
-    founder_nodes = search(:node, query)
-    raise "No founder node found!" if founder_nodes.length == 0
-    raise "Multiple founder nodes found!" if founder_nodes.length > 1
-    authkey_node = founder_nodes[0]
-  end
-else
-  query += " AND corosync:authkey"
+if authkey_nodes.length == 0
+  include_recipe "corosync::authkey_generator"
+elsif authkey_nodes.length > 0
+  authkey_node = authkey_nodes[0]
 
-  log("search query: #{query}")
-  authkey_nodes = search(:node, query)
-  log("nodes with authkey: #{authkey_nodes}")
-
-  if authkey_nodes.length == 0
+  if authkey_node[:corosync][:authkey] == nil
+    authkey_node = nil
     include_recipe "corosync::authkey_generator"
-  elsif authkey_nodes.length > 0
-    authkey_node = authkey_nodes[0]
   end
 end
 
-unless authkey_node.nil?
+if authkey_node != nil
   log("Using corosync authkey from node: #{authkey_node.name}")
   authkey = authkey_node[:corosync][:authkey]
 

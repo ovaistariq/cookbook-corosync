@@ -18,16 +18,13 @@
 #
 
 # chef makes csync2 redundant
-if platform_family? "suse"
+case node["platform_family"]
+when 'suse'
   service "csync2" do
     action [:stop, :disable]
   end
-end
-
-if platform_family? "rhel"
-  # http://clusterlabs.org/quickstart.html
-  Chef::Application.fatal! "FIXME: RedHat-based platforms configure corosync via cluster.conf"
-  return
+when 'rhel'
+  Chef::Log.warn("RedHat-based platforms configure corosync via cluster.conf")
 end
 
 unless %(udp udpu).include?(node[:corosync][:transport])
@@ -52,6 +49,9 @@ template "/etc/corosync/corosync.conf" do
     :transport    => node[:corosync][:transport]
   )
 
+  notifies :restart, "service[#{node['corosync']['platform']['service_name']}]"
+
+  # Restart the pacemaker service if its defined
   service_name = node[:pacemaker][:platform][:service_name] rescue nil
   if service_name
     notifies :restart, "service[#{service_name}]"

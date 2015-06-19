@@ -30,9 +30,7 @@ when %w(debian ubuntu)
     mode 0600
     variables(:enable_openais_service => node['corosync']['enable_openais_service'])
   end
-end
 
-unless node.platform == 'suse'
   # This block is not really necessary because chef would automatically backup the file.
   # However, it's good to have the backup file in the same directory. (Easier to find later.)
   ruby_block "backup corosync init script" do
@@ -75,7 +73,7 @@ rescue LoadError
 end
 
 user node[:corosync][:user] do
-  action :modify
+  action :create
   # requires ruby-shadow gem
   password node[:corosync][:password]
 end

@@ -17,6 +17,13 @@
 # limitations under the License.
 #
 
+# Configure the necessary yum repositories
+case node["platform_family"]
+when 'rhel'
+  include_recipe 'yum-epel'
+end
+
+# Install the required pacakges
 node[:corosync][:platform][:packages].each do |pkg|
   package pkg do
     action :install

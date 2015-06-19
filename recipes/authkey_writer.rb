@@ -17,11 +17,13 @@
 # limitations under the License.
 #
 
-authkey      = node[:corosync][:authkey]
+require 'base64'
+
+authkey      = node["corosync"]["authkey"]
 authkey_file = node[:corosync][:authkey_file]
 
 # decode so we can write out to file below
-corosync_authkey = Base64.decode64(authkey)
+corosync_authkey = Base64.decode64(authkey) if authkey != nil
 
 file authkey_file do
   content corosync_authkey
