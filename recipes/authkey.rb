@@ -42,7 +42,14 @@ authkey_nodes = search(:node, query)
 log("nodes with authkey: #{authkey_nodes}")
 
 if authkey_nodes.length == 0
-  include_recipe "corosync::authkey_generator"
+  # If no pre-existing authkey can be found on other nodes, then try to
+  # check to see if the current node has authkey defined as attribute
+  # if it has the attribute then we use it
+  if node[:corosync].attribute?("authkey") && node[:corosync][:authkey] != nil
+    authkey_node = node
+  else
+    include_recipe "corosync::authkey_generator"
+  end
 elsif authkey_nodes.length > 0
   authkey_node = authkey_nodes[0]
 
