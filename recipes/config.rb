@@ -50,18 +50,8 @@ template "/etc/corosync/corosync.conf" do
     :transport    => node[:corosync][:transport]
   )
 
-  # Stop the pacemaker service if its defined as that is needed for corosync
-  # service to be able to restart
   service_name = node[:pacemaker][:platform][:service_name] rescue nil
   if service_name
-    notifies :stop, "service[#{service_name}]", :immediately
-  end
-
-  notifies :restart, "service[#{node['corosync']['platform']['service_name']}]", :immediately
-
-  # Start the pacemaker service if its defined
-  service_name = node[:pacemaker][:platform][:service_name] rescue nil
-  if service_name
-    notifies :start, "service[#{service_name}]", :immediately
+    notifies :restart, "service[#{service_name}]", :immediately
   end
 end

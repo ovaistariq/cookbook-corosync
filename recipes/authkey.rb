@@ -53,7 +53,7 @@ if authkey_node == nil
   # If no pre-existing authkey can be found on other nodes, then try to
   # check to see if the current node has authkey defined as attribute
   # if it has the attribute then we use it
-  if node[:corosync][:authkey] != nil
+  if node["corosync"]["authkey"] != nil
     authkey_node = node
   else
     include_recipe "corosync::authkey_generator"
