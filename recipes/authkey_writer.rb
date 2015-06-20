@@ -31,5 +31,4 @@ file authkey_file do
   owner "root"
   mode "0400"
   action :create
-  notifies :restart, "service[#{node['corosync']['platform']['service_name']}]"
 end
