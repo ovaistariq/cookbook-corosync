@@ -17,6 +17,7 @@ suites:
     - recipe[corosync::default]
   attributes:
     corosync:
+      cluster_name: test_cluster
       bind_addr: "192.168.33.0"
       members: ["192.168.33.33", "192.168.33.34"]
       transport: "udpu"
@@ -30,6 +31,7 @@ suites:
     - recipe[corosync::default]
   attributes:
     corosync:
+      cluster_name: test_cluster
       bind_addr: "192.168.33.0"
       members: ["192.168.33.33", "192.168.33.34"]
       transport: "udpu"
