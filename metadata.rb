@@ -7,7 +7,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "1.1.1"
 
 depends "yum"
-depends "yum-epel"
+depends "yum-epel", '<= 0.6.0'
 
 %w{ redhat centos suse }.each do |os|
   supports os

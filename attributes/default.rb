@@ -14,6 +14,13 @@
 # limitations under the License.
 #
 
+# Disabling sslverify for EPEL repository because of a bug with SSL verification
+# on the 6.4 image, otherwise the package ca-certificates needs to be upgraded
+# together with disabling the epel repo when upgrading
+# sudo yum upgrade ca-certificates --disablerepo=epel
+default['yum']['epel']['sslverify'] = false
+
+
 default[:corosync][:cluster_name] = "hacluster"
 
 default[:corosync][:bind_addr ]   = "192.168.124.0"
